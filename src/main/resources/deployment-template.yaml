@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: :v_namespace
+    annotations:
+        field.cattle.io/projectId: :v_rancherProjectId
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: :v_persistentVolumeClaimName1
+    namespace: :v_namespace
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: :v_storageSize
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: :v_serviceName
+    namespace: :v_namespace
+spec:
+    selector:
+        app: :v_appName3
+    type: :v_serviceType
+    ports:
+    - name: rest
+      protocol: TCP
+      port: :v_servicePort
+      targetPort: :v_servicePort
+      nodePort: :v_serviceNodePort
+    - name: grpc
+      protocol: TCP
+      port: :v_servicePortGrpc
+      targetPort: :v_servicePortGrpc
+      nodePort: :v_serviceNodePortGrpc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: :v_deploymentName1
+    namespace: :v_namespace
+    labels:
+        app: :v_appName1
+spec:
+    replicas: :v_replicaCount
+    selector:
+        matchLabels:
+            app: :v_appName1
+    template:
+        metadata:
+            labels:
+                app: :v_appName1
+        spec:
+            imagePullSecrets:
+            - name: nexus-docker-registry
+            volumes:
+            - name: :v_applicationVolumeName
+              persistentVolumeClaim:
+                claimName: :v_persistentVolumeClaimName1
+            containers:
+            - name: :v_appName1
+              image: :v_dockerImage
+              ports:
+              - containerPort: :v_servicePort
+              env:
+                - name: SPRING_PROFILES_ACTIVE
+                  value: :v_active_profile1
+              volumeMounts:
+              - mountPath: :v_applicationMountPath
+                name: :v_applicationVolumeName
+            nodeSelector:
+                kubernetes.io/hostname: :v_nodeName
+            restartPolicy: Always
