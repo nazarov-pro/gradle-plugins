@@ -4,7 +4,7 @@ plugins {
     id 'maven'
 }
 
-group 'com.shahinnazarov'
+group 'mt.bettech.bs'
 version '1.0.1'
 
 println("${project.group}:${project.name}:${project.version}")
