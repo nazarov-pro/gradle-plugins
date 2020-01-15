@@ -2,15 +2,47 @@ plugins {
     id 'java'
     id 'groovy'
     id 'maven'
+    id "com.gradle.plugin-publish" version "0.10.1"
+    id "java-gradle-plugin"
 }
 
-group 'mt.bettech.bs'
-version '1.0.1'
+group 'com.shainnazarov'
+version '1.0.10'
 
-println("${project.group}:${project.name}:${project.version}")
 repositories {
-    mavenLocal()
+    jcenter()
     mavenCentral()
+}
+
+gradlePlugin {
+    plugins {
+        dockerFilePlugin {
+            id = 'docker.plugin'
+            implementationClass = 'com.shahinnazarov.gradle.plugins.DockerFilePlugin'
+        }
+        k8sPlugin {
+            id = 'k8s.plugin'
+            implementationClass = 'com.shahinnazarov.gradle.plugins.K8sPlugin'
+        }
+    }
+}
+
+
+pluginBundle {
+    website = "http://shahinnazarov.com"
+    vcsUrl = 'https://github.com/nazarov-pro/gradle-plugins'
+    description = 'Docker and K8S pluging. Others will be available soon!'
+    tags = ['docker', 'kubernetes', 'k8s']
+
+    plugins {
+        dockerFilePlugin {
+            displayName = 'Docker gradle plugin'
+        }
+
+        k8sPlugin {
+            displayName = 'Kubernetes gradle plugin'
+        }
+    }
 }
 
 dependencies {
