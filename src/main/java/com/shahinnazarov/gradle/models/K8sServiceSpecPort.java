@@ -20,6 +20,13 @@ public class K8sServiceSpecPort {
         this.protocol = protocol;
     }
 
+    public K8sServiceSpecPort(String name, Integer port, Integer targetPort, K8sServiceSpecPortProtocols protocol) {
+        this.name = name;
+        this.port = port;
+        this.targetPort = targetPort;
+        this.protocol = protocol;
+    }
+
     public K8sServiceSpecPort(String name, Integer containerPort) {
         this.name = name;
         this.containerPort = containerPort;
@@ -27,6 +34,12 @@ public class K8sServiceSpecPort {
 
     public K8sServiceSpecPort(Integer nodePort, Integer port, Integer targetPort, K8sServiceSpecPortProtocols protocol) {
         this.nodePort = nodePort;
+        this.port = port;
+        this.targetPort = targetPort;
+        this.protocol = protocol;
+    }
+
+    public K8sServiceSpecPort(Integer port, Integer targetPort, K8sServiceSpecPortProtocols protocol) {
         this.port = port;
         this.targetPort = targetPort;
         this.protocol = protocol;

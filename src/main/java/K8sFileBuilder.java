@@ -47,6 +47,16 @@ public class K8sFileBuilder {
 
 
     // SERVICES
+
+    public K8sFileBuilder addService(String name, String selectorKey, String selectorValue, String type,
+                                     String protocol, Integer port, Integer targetPort) {
+        Map<String, String> selector = createMapForOneEntry(selectorKey, selectorValue);
+        K8sServiceSpecPort k8sServiceSpecPort = new K8sServiceSpecPort(
+                port, targetPort, K8sServiceSpecPortProtocols.valueOf(protocol)
+        );
+        return addService(name, namespaceName, selector, type, Collections.singletonList(k8sServiceSpecPort));
+    }
+
     public K8sFileBuilder addService(String name, String selectorKey, String selectorValue, String type,
                                                 String protocol, Integer port, Integer targetPort, Integer nodePort) {
         Map<String, String> selector = createMapForOneEntry(selectorKey, selectorValue);

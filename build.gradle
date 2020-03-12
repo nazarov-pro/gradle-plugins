@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.shainnazarov'
-version '1.0.13'
+version '1.0.14'
 
 repositories {
     jcenter()
@@ -29,7 +29,7 @@ gradlePlugin {
 
 
 pluginBundle {
-    website = "http://shahinnazarov.com"
+    website = "http://shahinnazarov.com/gradle-plugins"
     vcsUrl = 'https://github.com/nazarov-pro/gradle-plugins'
     description = 'Docker and K8S pluging. Others will be available soon!'
     tags = ['docker', 'kubernetes', 'k8s']
