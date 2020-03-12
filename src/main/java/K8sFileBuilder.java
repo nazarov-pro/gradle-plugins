@@ -111,6 +111,27 @@ public class K8sFileBuilder {
                 nodeSelector, restartPolicy);
     }
 
+    public K8sFileBuilder addDeployment(String name, String labelKey, String labelValue,
+                                        Integer replicas, String imagePullSecretName,
+                                        String containerName, String imageName, String imagePullPolicy,
+                                        Integer containerPort, String nodeName, String restartPolicy,
+                                        String envKey, String envVal
+    ) {
+        Map<String, String> labels = createMapForOneEntry(labelKey, labelValue);
+        Map<String, String> nodeSelector = createMapForOneEntry(NODE_SELECTOR_HOST_KEY, nodeName);
+
+        K8sServiceSpecPort port = new K8sServiceSpecPort(containerName, containerPort);
+        Map<String, String> environments = new HashMap<>();
+        environments.put(envKey, envVal);
+        K8sPodTemplateSpecContainer container = new K8sPodTemplateSpecContainer(
+                containerName, imageName, K8sImagePullPolicies.valueOf(imagePullPolicy), Collections.singletonList(port), environments
+        );
+
+        return addDeployment(name, namespaceName, labels, replicas, labels, labels,
+                imagePullSecretName, null, Collections.singletonList(container),
+                nodeSelector, restartPolicy);
+    }
+
     public K8sFileBuilder addDeployment(String name, String namespace, Map<String, String> labels,
                                         Integer replicas, Map<String, String> matchLabels,
                                         Map<String, String> templateLabels, String pullSecretName,
