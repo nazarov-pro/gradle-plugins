@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.shainnazarov'
-version '1.0.14'
+version '1.0.18'
 
 repositories {
     jcenter()

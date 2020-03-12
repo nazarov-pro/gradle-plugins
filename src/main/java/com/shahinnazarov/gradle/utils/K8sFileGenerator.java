@@ -200,7 +200,7 @@ public class K8sFileGenerator {
     }
 
     public String generateImage(String name) {
-        return "image: ".concat(name).concat("\n");
+        return "image: ".concat(name.replaceAll("https://", "").replaceAll("http://", "")).concat("\n");
     }
 
     public String generateImagePullPolicy(K8sImagePullPolicies imagePullPolicy) {
@@ -282,7 +282,7 @@ public class K8sFileGenerator {
             if (persistentVolumeClaimSpec.getAccessModes() != null) {
                 result.append(addTab(generateAccessModes()));
                 persistentVolumeClaimSpec.getAccessModes().forEach(am -> {
-                    result.append(addTab(generateListItem(am.getName().concat("\n")), 2));
+                    result.append(addTab(generateListItem(am.getName().concat("\n")), 1));
                 });
             }
 
@@ -329,27 +329,27 @@ public class K8sFileGenerator {
                         boolean selected = false;
 
                         if (p.getName() != null) {
-                            result.append(addTab(generateListItem(generateName(p.getName()), selected), 2));
+                            result.append(addTab(generateListItem(generateName(p.getName()), selected), subtractOne(selected, 2)));
                             selected = true;
                         }
 
                         if (p.getProtocol() != null) {
-                            result.append(addTab(generateListItem(generateProtocol(p.getProtocol().getName()), selected), 2));
+                            result.append(addTab(generateListItem(generateProtocol(p.getProtocol().getName()), selected), subtractOne(selected, 2)));
                             selected = true;
                         }
 
                         if (p.getPort() != null) {
-                            result.append(addTab(generateListItem(generatePort(p.getPort()), selected), 2));
+                            result.append(addTab(generateListItem(generatePort(p.getPort()), selected), subtractOne(selected, 2)));
                             selected = true;
                         }
 
                         if (p.getTargetPort() != null) {
-                            result.append(addTab(generateListItem(generateTargetPort(p.getTargetPort()), selected), 2));
+                            result.append(addTab(generateListItem(generateTargetPort(p.getTargetPort()), selected), subtractOne(selected, 2)));
                             selected = true;
                         }
 
                         if (p.getNodePort() != null) {
-                            result.append(addTab(generateListItem(generateNodePort(p.getNodePort()), selected), 2));
+                            result.append(addTab(generateListItem(generateNodePort(p.getNodePort()), selected), subtractOne(selected, 2)));
                         }
 
                     }
@@ -360,9 +360,14 @@ public class K8sFileGenerator {
         return result.toString().trim();
     }
 
+    public int subtractOne(boolean selected, int tabSize) {
+        return selected ? tabSize : tabSize - 1;
+    }
+
     public String generateSelector(K8sSelector selector) {
         return generateSelector(selector, 1);
     }
+
     public String generateSelector(K8sSelector selector, int size) {
         StringBuilder result = new StringBuilder(addTab(generateSelector(), size));
         if (selector == null) {
@@ -414,7 +419,7 @@ public class K8sFileGenerator {
         if (podTemplateSpec.getImagePullSecret() != null) {
             result.append(addTab(generateImagePullSecrets(), 3));
             result.append(addTab(generateListItem(generateName(podTemplateSpec.getImagePullSecret())
-            ), 4));
+            ), 3));
         }
 
         if (podTemplateSpec.getVolumes() != null) {
@@ -425,7 +430,7 @@ public class K8sFileGenerator {
 
                         if (podTemplateSpecVolume.getName() != null) {
                             result.append(addTab(generateListItem(generateName(podTemplateSpecVolume.getName()),
-                                    selected), 4));
+                                    selected), subtractOne(selected, 4)));
                             selected = true;
                         }
 
@@ -446,13 +451,13 @@ public class K8sFileGenerator {
 
                 if (container.getName() != null) {
                     result.append(addTab(generateListItem(generateName(container.getName()),
-                            selected.get()), 4));
+                            selected.get()), subtractOne(selected.get(), 4)));
                     selected.set(true);
                 }
 
                 if (container.getImage() != null) {
                     result.append(addTab(generateListItem(generateImage(container.getImage()),
-                            selected.get()), 4));
+                            selected.get()), subtractOne(selected.get(), 4)));
                     selected.set(true);
                 }
 
@@ -465,11 +470,11 @@ public class K8sFileGenerator {
                     result.append(addTab(generatePorts(), 4));
                     container.getPorts().forEach(port -> {
                         selected.set(false);
-                        if(port.getName() != null) {
-                            result.append(addTab(generateListItem(generateName(port.getName()), selected.get()), 5));
+                        if (port.getName() != null) {
+                            result.append(addTab(generateListItem(generateName(port.getName()), selected.get()), subtractOne(selected.get(), 5)));
                             selected.set(true);
                         }
-                        if(port.getContainerPort() != null) {
+                        if (port.getContainerPort() != null) {
                             result.append(addTab(generateListItem(generateContainerPort(port.getContainerPort()),
                                     selected.get()), 5));
                         }
@@ -479,7 +484,7 @@ public class K8sFileGenerator {
                 if (container.getEnvironments() != null) {
                     result.append(addTab(generateEnv(), 4));
                     container.getEnvironments().forEach((k, v) -> {
-                        result.append(addTab(generateListItem(generateName(k)), 5));
+                        result.append(addTab(generateListItem(generateName(k)), 4));
                         result.append(addTab(generateValue(v), 5));
                     });
                 }
@@ -492,13 +497,13 @@ public class K8sFileGenerator {
 
                         if (vm.getName() != null) {
                             result.append(addTab(generateListItem(generateName(vm.getName()),
-                                    selected.get()), 5));
+                                    selected.get()), subtractOne(selected.get(), 4)));
                             selected.set(true);
                         }
 
                         if (vm.getMountPath() != null) {
                             result.append(addTab(generateListItem(generateMountPath(vm.getMountPath()),
-                                    selected.get()), 5));
+                                    selected.get()), subtractOne(selected.get(), 4)));
                         }
                     });
                 }
@@ -549,7 +554,7 @@ public class K8sFileGenerator {
     public String addTab(String data, int size) {
         String tabs = "";
         for (int i = 0; i < size; i++) {
-            tabs += " ";
+            tabs += "  ";
         }
         return tabs.concat(data);
     }

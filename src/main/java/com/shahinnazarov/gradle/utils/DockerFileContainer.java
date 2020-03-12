@@ -18,7 +18,7 @@ public class DockerFileContainer {
         String setWorkDir = "WORKDIR /app";
         String executeJar = "ENTRYPOINT exec java -jar application.jar";
         DockerStageStep step = new DockerStageStep();
-        step.setSteps(Arrays.asList(copyExecutableFileCommand, setWorkDir, executeJar));
+        step.setSteps(Arrays.asList(setWorkDir, copyExecutableFileCommand, executeJar));
         stage.setSteps(Arrays.asList(step));
         dockerFile.setStages(Arrays.asList(stage));
         dockerFile.setDefaultFileName("Dockerfile");
