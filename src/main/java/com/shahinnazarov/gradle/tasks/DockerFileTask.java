@@ -6,6 +6,7 @@ import com.shahinnazarov.gradle.utils.DockerFileContainer;
 import lombok.Getter;
 import lombok.Setter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
@@ -15,6 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Properties;
 
 public class DockerFileTask extends DefaultTask {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -23,6 +28,12 @@ public class DockerFileTask extends DefaultTask {
     @Getter
     @OutputFile
     private File outputFile;
+
+    @Setter
+    @Getter
+    @Optional
+    @OutputFile
+    private File buildInfoOutputFile;
 
     @TaskAction
     public void apply() {
@@ -35,9 +46,27 @@ public class DockerFileTask extends DefaultTask {
                 outputFile = new File(dockerFile.getDefaultFileName());
             }
 
-            Path resolve = outputFile.toPath();
-            Files.deleteIfExists(resolve);
-            Files.write(resolve, content.getBytes());
+            Path dockerFilePath = outputFile.toPath();
+            Files.deleteIfExists(dockerFilePath);
+            Files.write(dockerFilePath, content.getBytes());
+
+            if(buildInfoOutputFile != null) {
+                LocalDateTime now = LocalDateTime.now();
+                String timestamp = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+                Properties properties = new Properties();
+                properties.setProperty("timestamp", timestamp);
+                properties.setProperty("applicationName", getProject().getName());
+                properties.setProperty("version", getProject().getVersion().toString());
+                properties.setProperty("group", getProject().getGroup().toString());
+
+                Path buildInfoFilePath = buildInfoOutputFile.toPath();
+                Files.deleteIfExists(buildInfoFilePath);
+                StringBuilder buildInfoContent = new StringBuilder();
+                properties.forEach((k,v) -> buildInfoContent.append(String.format("%s=%s\n", k, v)));
+                Files.write(buildInfoFilePath, buildInfoContent.toString().getBytes());
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

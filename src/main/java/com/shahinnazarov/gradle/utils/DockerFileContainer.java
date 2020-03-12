@@ -13,7 +13,7 @@ public class DockerFileContainer {
         DockerStage stage = new DockerStage();
         stage.setFromImage(DockerStage.DockerImages.OPENJDK.getImageWithDefaultVersion());
         stage.setBuildLabel("main");
-        String copyExecutableFileCommand = String.format("COPY /build/libs/%s /app/application.jar",
+        String copyExecutableFileCommand = String.format("COPY /libs/%s /app/application.jar",
                 appFileName);
         String setWorkDir = "WORKDIR /app";
         String executeJar = "ENTRYPOINT exec java -jar application.jar";
