@@ -14,6 +14,12 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    snakeYamlVersion = "1.21"
+    lombokVersion = "1.18.10"
+    junitVersion = "4.12"
+}
+
 gradlePlugin {
     plugins {
         dockerFilePlugin {
@@ -46,8 +52,11 @@ pluginBundle {
 }
 
 dependencies {
-    compile gradleApi()
-    compileClasspath 'org.projectlombok:lombok:1.18.10'
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation gradleApi()
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testImplementation "junit:junit:${junitVersion}"
 }
