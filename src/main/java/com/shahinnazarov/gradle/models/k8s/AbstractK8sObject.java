@@ -18,4 +18,5 @@ public abstract class AbstractK8sObject<R extends DefaultK8sObject, M extends De
     protected ChangeListener<M> listener;
 
 
+
 }

@@ -10,6 +10,8 @@ import com.shahinnazarov.gradle.models.k8s.Deployment;
 import com.shahinnazarov.gradle.models.k8s.Namespace;
 import org.junit.Test;
 
+import java.util.Scanner;
+
 public class YamlExportingTest {
 
     @Test
@@ -39,6 +41,13 @@ public class YamlExportingTest {
                 .name("deployment-01")
                 .buildMetadata()
                 .spec()
+                .minReadySeconds(100)
+                .progressDeadlineSeconds(1000)
+                .paused(false)
+                .revisionHistoryLimit(2)
+                .deploymentStrategy()
+                .recreate()
+                .buildDeploymentStrategy()
                 .replicas(3)
                 .selector()
                 .addMatchLabel("app", "myapp")
@@ -48,14 +57,32 @@ public class YamlExportingTest {
                 .namespace("space")
                 .addLabel("app", "myapp")
                 .buildMetadata()
-                .spec().imagePullSecret("secret").buildPodTemplateSpec()
+                .spec()
+                .activeDeadlineSeconds(100)
+                .addContainer()
+                .image("image:v1.0.0")
+                .imagePullPolicyToAlways()
+                .name("service")
+                .addVolumeMount()
+                .mountPath("/logs")
+                .name("logs")
+                .buildVolumeDevice()
+                .buildContainer()
+                .addVolume()
+                .name("logs")
+                .emptyDir()
+                .buildEmptyDir()
+                .buildPodVolume()
+                .buildPodTemplateSpec()
                 .buildPodTemplate()
                 .buildSpecification()
                 .buildDeployment()
                 ;
 
         ObjectMapper yamlMapper = new ObjectMapper(
-                new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                new YAMLFactory()
+
+                        .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
         );
         yamlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         yamlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

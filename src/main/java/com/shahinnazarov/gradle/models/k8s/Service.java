@@ -7,20 +7,23 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         {
                 "apiVersion",
                 "kind",
-                "metadata"
+                "metadata",
+                "spec"
         }
 )
-public final class Namespace implements DefaultK8sResource<Namespace> {
-    private Namespace() {
+public final class Service implements DefaultK8sResource<Service> {
+    private Service() {
 
     }
 
     @JsonProperty("kind")
-    private String kind = "Namespace";
+    private String kind = "Service";
     @JsonProperty("metadata")
-    private Metadata metadata;
+    private Metadata<Service> metadata;
     @JsonProperty("apiVersion")
     private String apiVersion = "v1";
+    @JsonProperty("spec")
+    private ServiceSpec<Service> spec;
 
     @Override
     public String getApiVersion() {
@@ -37,20 +40,30 @@ public final class Namespace implements DefaultK8sResource<Namespace> {
         return metadata;
     }
 
-    public Namespace metadata(Metadata metadata) {
+    public Service metadata(Metadata<Service> metadata) {
         this.metadata = metadata;
         return this;
     }
 
-    public Metadata<Namespace> metadata() {
+    public ServiceSpec<Service> spec() {
+        return new ServiceSpec<>(this, this::spec);
+    }
+
+    public Service spec(ServiceSpec<Service> spec) {
+        this.spec = spec;
+        return this;
+    }
+
+    public Metadata<Service> metadata() {
         return new Metadata<>(this, this::metadata);
     }
 
-    public static Namespace instance() {
-        return new Namespace();
+    public static Service instance() {
+        return new Service();
     }
 
-    public Namespace buildNamespace() {
+    public Service buildService() {
         return this;
     }
+
 }
