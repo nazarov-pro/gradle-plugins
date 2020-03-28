@@ -1,0 +1,36 @@
+K8sContext:
+  useDefaultNs(): NamespaceBuilder
+  createNs(): NamespaceBuilder
+---
+
+NamespaceBuilder:
+  createStatefulSet(): StatefulSetBuilder
+  createDeploy(): DeploymentBuilder
+  createSvc(): ServiceBuilder
+  createPvc(): PersistentVolumeClaimBuilder
+  createSecret(): SecretBuilder
+  createConfigMap(): ConfigMapBuilder
+  createReplicationController(): ReplicationController
+  createReplicaSet(): ReplicaSet
+  createPod(): PodBuilder
+  createDeamonSet(): DeamonSetBuilder
+  createIngress(): IngressBuilder
+  createNetworkPolicy(): NetworkPolicyBuilder
+  buildDeploy(): K8SContext
+---
+# Requires Namespace
+DeploymentBuilder: 
+  createService(): ServiceBuilder
+  createPvc(): PersistentVolumeClaimBuilder
+  buildDeploy() : NamespaceBuilder
+  buildDeployAndUse() : DeploymentBuilder
+
+---
+StatefulSetBuilder:
+  
+---
+JobBuilder:
+
+---
+CronJobBuilder:
+  
