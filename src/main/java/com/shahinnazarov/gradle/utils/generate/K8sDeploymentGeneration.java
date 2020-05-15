@@ -1,5 +1,11 @@
 package com.shahinnazarov.gradle.utils.generate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.shahinnazarov.gradle.models.k8s.Deployment;
 import com.shahinnazarov.gradle.models.k8s.DeploymentSpecification;
 
@@ -10,7 +16,8 @@ public class K8sDeploymentGeneration {
     public String generateDeployment(Map<String, String> properties) {
         String result = "";
         String appName = properties.get("name");
-        DeploymentSpecification<Deployment> deployment = Deployment.instance()
+        Deployment deployment = Deployment.instance();
+        DeploymentSpecification<Deployment> deploymentSpecification = deployment
                 .metadata()
                 .name(appName)
                 .labels(getLabels(properties))
@@ -24,14 +31,14 @@ public class K8sDeploymentGeneration {
                 case "rollingupdate":
                     String maxSurge = properties.get("strategy.rollingUpdate.maxSurge");
                     String maxUnavailable = properties.get("strategy.rollingUpdate.maxUnavailable");
-                    deployment.deploymentStrategy()
+                    deploymentSpecification.deploymentStrategy()
                             .rollingUpdate().maxSurge(maxSurge)
                             .maxUnavailable(maxUnavailable)
                             .buildRollingUpdate()
                             .buildDeploymentStrategy();
                     break;
                 case "recreate":
-                    deployment.deploymentStrategy().recreate().buildDeploymentStrategy();
+                    deploymentSpecification.deploymentStrategy().recreate().buildDeploymentStrategy();
                     break;
                 default:
                     //log
@@ -41,10 +48,35 @@ public class K8sDeploymentGeneration {
 
 
         Integer replicas = Integer.parseInt(properties.getOrDefault("replicas", "1"));
-        deployment.selector().addMatchLabel("app", appName).buildSelector()
+        deploymentSpecification.selector().addMatchLabel("app", appName).buildSelector()
                 .replicas(replicas)
-                .buildSpecification()
-                .buildDeployment();
+                .buildSpecification();
+
+        deploymentSpecification.podTemplate()
+                .metadata()
+                .addLabel("app", appName)
+                .buildMetadata()
+                .spec()
+
+                .buildPodTemplateSpec()
+                .buildPodTemplate()
+                .buildSpecification();
+
+
+        ObjectMapper yamlMapper = new ObjectMapper(
+                new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+        );
+        yamlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        yamlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        String yamlContent = null;
+        try {
+            yamlContent = yamlMapper.writeValueAsString(deployment);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        result = result.concat(yamlContent).concat("---\n");
+
         return result;
     }
 

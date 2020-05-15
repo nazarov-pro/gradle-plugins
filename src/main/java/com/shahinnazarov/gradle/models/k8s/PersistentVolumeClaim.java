@@ -62,7 +62,7 @@ public final class PersistentVolumeClaim implements DefaultK8sResource<Persisten
         return new PersistentVolumeClaim();
     }
 
-    public PersistentVolumeClaim buildService() {
+    public PersistentVolumeClaim buildPersistentVolumeClaim() {
         return this;
     }
 

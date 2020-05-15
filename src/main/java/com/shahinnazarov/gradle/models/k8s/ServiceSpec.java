@@ -113,6 +113,11 @@ public final class ServiceSpec<R extends DefaultK8sObject> extends AbstractK8sOb
         return this;
     }
 
+    public ServiceSpec<R> selector(Map<String, String> selector) {
+        this.selector = selector;
+        return this;
+    }
+
     public ServiceSpec<R> addSelector(String key, String value) {
         if (this.selector == null) {
             this.selector = new HashMap<>();
@@ -127,7 +132,8 @@ public final class ServiceSpec<R extends DefaultK8sObject> extends AbstractK8sOb
     }
 
     public ServiceSessionAffinityConfig<ServiceSpec<R>> sessionAffinityConfig() {
-        return new ServiceSessionAffinityConfig<>(this, this::sessionAffinityConfig);
+        return sessionAffinityConfig == null ?
+                new ServiceSessionAffinityConfig<>(this, this::sessionAffinityConfig) : sessionAffinityConfig;
     }
 
     public ServiceSpec<R> sessionAffinityConfig(ServiceSessionAffinityConfig<ServiceSpec<R>> sessionAffinityConfig) {

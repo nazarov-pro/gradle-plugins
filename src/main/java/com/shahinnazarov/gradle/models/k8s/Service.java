@@ -46,7 +46,7 @@ public final class Service implements DefaultK8sResource<Service> {
     }
 
     public ServiceSpec<Service> spec() {
-        return new ServiceSpec<>(this, this::spec);
+        return spec == null ? new ServiceSpec<>(this, this::spec) : spec;
     }
 
     public Service spec(ServiceSpec<Service> spec) {

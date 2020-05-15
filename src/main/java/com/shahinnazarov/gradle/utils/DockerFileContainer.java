@@ -10,13 +10,15 @@ public class DockerFileContainer {
 
     public static DockerFile getForJavaDockerFileForGradle(String appFileName) {
         DockerFile dockerFile = new DockerFile();
+
         DockerStage stage = new DockerStage();
         stage.setFromImage(DockerStage.DockerImages.OPENJDK.getImageWithDefaultVersion());
         stage.setBuildLabel("main");
-        String copyExecutableFileCommand = String.format("COPY /libs/%s /app/application.jar",
-                appFileName);
+
+        String copyExecutableFileCommand = String.format("COPY /libs/%s /app/application.jar", appFileName);
         String setWorkDir = "WORKDIR /app";
-        String executeJar = "ENTRYPOINT exec java -jar application.jar";
+        String executeJar = "ENTRYPOINT exec java -jar $JAVA_OPTS application.jar";
+
         DockerStageStep step = new DockerStageStep();
         step.setSteps(Arrays.asList(setWorkDir, copyExecutableFileCommand, executeJar));
         stage.setSteps(Arrays.asList(step));

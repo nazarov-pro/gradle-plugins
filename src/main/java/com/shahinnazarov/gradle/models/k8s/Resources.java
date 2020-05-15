@@ -20,9 +20,20 @@ public final class Resources<R extends DefaultK8sObject> extends AbstractK8sObje
 
     @JsonProperty("limits")
     private Map<String, String> limits;
+
     @JsonProperty("requests")
     private Map<String, String> requests;
 
+
+    public Resources<R> limits(Map<String, String> limits) {
+        this.limits = limits;
+        return this;
+    }
+
+    public Resources<R> requests(Map<String, String> requests) {
+        this.requests = requests;
+        return this;
+    }
 
     public Resources<R> addLimit(String key, String value) {
         if (this.limits == null) {

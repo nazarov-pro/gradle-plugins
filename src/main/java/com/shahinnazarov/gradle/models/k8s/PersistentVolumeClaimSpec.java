@@ -47,6 +47,11 @@ public final class PersistentVolumeClaimSpec<R extends DefaultK8sObject> extends
         return this;
     }
 
+    public PersistentVolumeClaimSpec<R> accessModes(List<String> accessModes) {
+        this.accessModes = accessModes;
+        return this;
+    }
+
     public PersistentVolumeClaimSpec<R> dataSource(DataSource<PersistentVolumeClaimSpec<R>> dataSource) {
         this.dataSource = dataSource;
         return this;

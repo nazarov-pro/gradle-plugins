@@ -10,8 +10,6 @@ import com.shahinnazarov.gradle.models.k8s.Deployment;
 import com.shahinnazarov.gradle.models.k8s.Namespace;
 import org.junit.Test;
 
-import java.util.Scanner;
-
 public class YamlExportingTest {
 
     @Test

@@ -3,6 +3,7 @@ package com.shahinnazarov.gradle.models.k8s;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
                 "name", "namespace", "labels", "annotations"
         }
 )
+@Getter
 public final class Metadata<R extends DefaultK8sObject> extends AbstractK8sObject<R, Metadata<R>> {
 
     public Metadata(R result, ChangeListener<Metadata<R>> listener) {
