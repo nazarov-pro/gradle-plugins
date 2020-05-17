@@ -31,7 +31,7 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                 .spec()
                 .nodeName(getFromProperties(properties, getFullKey(groupId, SELECTED_NODE)))
                 .addImagePullSecret()
-                .name(getFromProperties(properties, groupId, IMAGE_PULL_SECRET))
+                .name(getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET)))
                 .buildImagePullSecret()
                 .restartPolicy(getFromProperties(properties, getFullKey(groupId, RESTART)))
                 .buildPodTemplateSpec()

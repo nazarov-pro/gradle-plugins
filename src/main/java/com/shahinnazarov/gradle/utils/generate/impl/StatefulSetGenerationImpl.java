@@ -34,7 +34,7 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                 .spec()
                 .nodeName(getFromProperties(properties, getFullKey(groupId, SELECTED_NODE)))
                 .addImagePullSecret()
-                .name(getFromProperties(properties, groupId, IMAGE_PULL_SECRET))
+                .name(getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET)))
                 .buildImagePullSecret()
                 .restartPolicy(getFromProperties(properties, getFullKey(groupId, RESTART)))
                 .buildPodTemplateSpec()
@@ -143,18 +143,27 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                     });
                 }
 
+
                 String readinessProbeType = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, TYPE),
                         "none");
                 switch (readinessProbeType) {
                     case "http":
                         String readinessProbePort = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PORT));
                         String readinessProbePath = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PATH));
+                        Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, INITIAL_DELAY));
+                        Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, PERIOD_SECONDS));
+                        Integer successThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, SUCCESS_THRESHOLD));
+                        Integer failureThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, FAILURE_THRESHOLD));
 
                         container.readinessProbe()
                                 .httpGet()
                                 .port(readinessProbePort)
                                 .path(readinessProbePath)
                                 .buildHttpGet()
+                                .initialDelaySeconds(initialDelaySeconds)
+                                .periodSeconds(periodSeconds)
+                                .successThreshold(successThreshold)
+                                .failureThreshold(failureThreshold)
                                 .buildProbe();
                         break;
                 }
@@ -167,15 +176,23 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                     case "http":
                         String livenessProbePort = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PORT));
                         String livenessProbePath = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PATH));
+                        Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, INITIAL_DELAY));
+                        Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, PERIOD_SECONDS));
+                        Integer successThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, SUCCESS_THRESHOLD));
+                        Integer failureThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, FAILURE_THRESHOLD));
+
                         container.livenessProbe()
                                 .httpGet()
                                 .port(livenessProbePort)
                                 .path(livenessProbePath)
                                 .buildHttpGet()
+                                .initialDelaySeconds(initialDelaySeconds)
+                                .periodSeconds(periodSeconds)
+                                .successThreshold(successThreshold)
+                                .failureThreshold(failureThreshold)
                                 .buildProbe();
                         break;
                 }
-
 
                 Map<String, String> requests = getAsMap(join(containersKey, id, RESOURCES_REQUESTS), properties);
                 Map<String, String> limits = getAsMap(join(containersKey, id, RESOURCES_LIMITS), properties);
