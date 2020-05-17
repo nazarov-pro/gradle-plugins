@@ -88,6 +88,11 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
             containers.forEach((id, parameters) -> {
                 String name = parameters.getOrDefault(join(containersKey, id, NAME), id);
                 String image = parameters.get(join(containersKey, id, IMAGE));
+                if(image.startsWith(HTTP_PREFIX)) {
+                    image = image.substring(HTTP_PREFIX.length());
+                } else if(image.startsWith(HTTPS_PREFIX)) {
+                    image = image.substring(HTTPS_PREFIX.length());
+                }
 
                 Map<String, Map<String, String>> ports = getAsMapByGroupId(join(containersKey, id, PORTS), properties, 0);
                 Map<String, Map<String, String>> env = getAsMapByGroupId(join(containersKey, id, ENV), properties, 0);
@@ -138,12 +143,20 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                     case "http":
                         String readinessProbePort = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PORT));
                         String readinessProbePath = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PATH));
+                        Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, INITIAL_DELAY));
+                        Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, PERIOD_SECONDS));
+                        Integer successThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, SUCCESS_THRESHOLD));
+                        Integer failureThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, FAILURE_THRESHOLD));
 
                         container.readinessProbe()
                                 .httpGet()
                                 .port(readinessProbePort)
                                 .path(readinessProbePath)
                                 .buildHttpGet()
+                                .initialDelaySeconds(initialDelaySeconds)
+                                .periodSeconds(periodSeconds)
+                                .successThreshold(successThreshold)
+                                .failureThreshold(failureThreshold)
                                 .buildProbe();
                         break;
                 }
@@ -156,11 +169,20 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                     case "http":
                         String livenessProbePort = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PORT));
                         String livenessProbePath = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PATH));
+                        Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, INITIAL_DELAY));
+                        Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, PERIOD_SECONDS));
+                        Integer successThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, SUCCESS_THRESHOLD));
+                        Integer failureThreshold = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, FAILURE_THRESHOLD));
+
                         container.livenessProbe()
                                 .httpGet()
                                 .port(livenessProbePort)
                                 .path(livenessProbePath)
                                 .buildHttpGet()
+                                .initialDelaySeconds(initialDelaySeconds)
+                                .periodSeconds(periodSeconds)
+                                .successThreshold(successThreshold)
+                                .failureThreshold(failureThreshold)
                                 .buildProbe();
                         break;
                 }

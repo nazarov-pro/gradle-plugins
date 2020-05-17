@@ -11,5 +11,6 @@ public class K8sPlugin implements Plugin<Project> {
         project.getExtensions().create("K8sFile", K8sFile.class);
 //        project.getExtensions().create("K8sFileBuilder", K8sFileBuilder.class);
         project.getTasks().create("generateK8sFile", K8sTask.class);
+        project.getTasks().getByName("build").finalizedBy("generateK8sFile");
     }
 }

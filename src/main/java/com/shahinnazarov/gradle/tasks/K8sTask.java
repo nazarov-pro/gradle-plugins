@@ -6,6 +6,7 @@ import com.shahinnazarov.gradle.utils.K8sFileGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -25,20 +26,24 @@ public class K8sTask extends DefaultTask {
     @Setter
     @Getter
     @OutputFile
-    private File outputFile;
+    private File k8sOutputFile;
 
     @Setter
     @Getter
     @InputFile
-    private File inputFile;
+    private File templateInputFile;
 
     @TaskAction
     public void generateK8sFile() {
         try {
             String content;
-            if (inputFile != null) {
+            if (templateInputFile != null) {
                 Properties properties = new Properties();
-                properties.load(new FileInputStream(inputFile));
+                properties.load(new FileInputStream(templateInputFile));
+                System.setProperty("project.version", getProject().getVersion().toString());
+                System.setProperty("project.name", getProject().getName());
+                System.setProperty("project.groupId", getProject().getGroup().toString());
+
                 K8sContext.initialize(properties);
                 content = K8sContext.getInstance().getAsYaml();
             } else {
@@ -47,10 +52,10 @@ public class K8sTask extends DefaultTask {
                 content = k8sFileGenerator.generate(k8sFile);
             }
 
-            if (outputFile == null) {
-                outputFile = new File("deployment");
+            if (k8sOutputFile == null) {
+                k8sOutputFile = new File("deployment");
             }
-            Path resolve = outputFile.toPath();
+            Path resolve = k8sOutputFile.toPath();
             Files.deleteIfExists(resolve);
             Files.write(resolve, content.getBytes());
         } catch (IOException e) {

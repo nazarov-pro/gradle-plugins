@@ -48,9 +48,6 @@ public class K8sContext {
     }
 
     public static void initialize(Properties properties) {
-        if (k8sContext != null) {
-            throw new RuntimeException("K8sContext has already been initialized.");
-        }
         k8sContext = new K8sContext(properties);
     }
 
@@ -158,37 +155,37 @@ public class K8sContext {
 
     public String getAsYaml() {
         StringBuilder result = new StringBuilder();
+        String separator = Constants.YAML_RESOURCE_SEPARATOR + "\n\n";
 
         getNamespaces().forEach(namespace -> {
             result.append(getAsYaml(namespace));
-            result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n\n");
+            result.append(separator);
         });
 
         getPersistentVolumeClaims().forEach(persistentVolumeClaim -> {
             result.append(getAsYaml(persistentVolumeClaim));
-            result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n\n");
+            result.append(separator);
         });
 
         getServices().forEach(service -> {
             result.append(getAsYaml(service));
-            result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n\n");
+            result.append(separator);
         });
 
         getDeployments().forEach(deployment -> {
             result.append(getAsYaml(deployment));
-            result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n\n");
+            result.append(separator);
         });
 
 
         getStatefulSets().forEach(statefulSet -> {
             result.append(getAsYaml(statefulSet));
-            result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n\n");
+            result.append(separator);
         });
+
+        if(result.length() > separator.length()) {
+            return result.substring(0, (result.length() - separator.length()));
+        }
 
         return result.toString();
     }

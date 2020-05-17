@@ -1,6 +1,7 @@
 package com.shahinnazarov.gradle.tasks;
 
 import com.shahinnazarov.gradle.extensions.DockerFile;
+import com.shahinnazarov.gradle.extensions.DockerFileConfig;
 import com.shahinnazarov.gradle.utils.DockerFileGenerator;
 import com.shahinnazarov.gradle.utils.DockerFileContainer;
 import lombok.Getter;
@@ -27,13 +28,14 @@ public class DockerFileTask extends DefaultTask {
     @Setter
     @Getter
     @OutputFile
-    private File outputFile;
+    private File dockerFileOutputFile;
 
     @Setter
     @Getter
     @Optional
     @OutputFile
     private File buildInfoOutputFile;
+
 
     @TaskAction
     public void apply() {
@@ -42,11 +44,11 @@ public class DockerFileTask extends DefaultTask {
         DockerFileGenerator dockerFileGenerator = new DockerFileGenerator();
         String content = dockerFileGenerator.generate(dockerFile);
         try {
-            if(outputFile == null) {
-                outputFile = new File(dockerFile.getDefaultFileName());
+            if(dockerFileOutputFile == null) {
+                dockerFileOutputFile = new File(dockerFile.getDefaultFileName());
             }
 
-            Path dockerFilePath = outputFile.toPath();
+            Path dockerFilePath = dockerFileOutputFile.toPath();
             Files.deleteIfExists(dockerFilePath);
             Files.write(dockerFilePath, content.getBytes());
 
@@ -76,11 +78,16 @@ public class DockerFileTask extends DefaultTask {
         String name = getProject().getName();
         String version = getProject().getVersion().toString();
         String fileName = String.format("%s-%s.jar", name, version);
+        DockerFileConfig dockerFileConfig = getProject().getExtensions()
+                .findByType(DockerFileConfig.class);
+        if(dockerFileConfig != null) {
+            return new DockerFileContainer().getConfiguredDockerFile(dockerFileConfig, fileName);
+        }
+
         DockerFile dockerFile = getProject().getExtensions()
                 .findByType(DockerFile.class);
-
         if (dockerFile == null || dockerFile.getStages() == null) {
-            dockerFile = new DockerFileContainer().getForJavaDockerFileForGradle(fileName);
+            return new DockerFileContainer().getForJavaDockerFileForGradle(fileName);
         }
         return dockerFile;
     }

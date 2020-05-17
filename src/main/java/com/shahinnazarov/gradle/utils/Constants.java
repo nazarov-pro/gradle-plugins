@@ -41,6 +41,12 @@ public final class Constants {
     public static final String PATH = "path";
     public static final String READINESS_PROBE = "readinessProbe";
     public static final String LIVENESS_PROBE = "livenessProbe";
+
+    public static final String INITIAL_DELAY = "initialDelay";
+    public static final String PERIOD_SECONDS = "periodSeconds";
+    public static final String SUCCESS_THRESHOLD = "successThreshold";
+    public static final String FAILURE_THRESHOLD = "failureThreshold";
+
     public static final String STRATEGY = "strategy";
     public static final String ROLLING_UPDATE = "rollingUpdate";
     public static final String RECREATE = "recreate";
@@ -54,4 +60,10 @@ public final class Constants {
 
     public static final String VOLUME_CLAIMS = "volumeClaims";
     public static final String SERVICE_NAME = "serviceName";
+
+
+
+    public static final String HTTP_PREFIX = "http://";
+    public static final String HTTPS_PREFIX = "https://";
+
 }

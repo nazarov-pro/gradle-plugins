@@ -32,7 +32,7 @@ public class DockerFileGenerator {
                             dockerStage.getSteps().forEach(
                                     step -> {
                                         if (step != null) {
-                                            step.getSteps().forEach(line -> {
+                                            step.getSubSteps().forEach(line -> {
                                                 result.append(line.concat("\n"));
                                             });
                                         }

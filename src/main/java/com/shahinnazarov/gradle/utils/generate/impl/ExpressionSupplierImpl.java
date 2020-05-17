@@ -29,6 +29,10 @@ public class ExpressionSupplierImpl implements ExpressionSupplier {
 
     @Override
     public String applyExpressions(String value) {
+        if(value == null) {
+            return null;
+        }
+
         Matcher matcher = PATTERN.matcher(value);
         while (matcher.find()) {
             String group = matcher.group(1);

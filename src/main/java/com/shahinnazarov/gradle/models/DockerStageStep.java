@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class DockerStageStep {
-    private List<String> steps;
+    private List<String> subSteps;
 }

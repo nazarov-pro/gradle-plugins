@@ -94,6 +94,12 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                 String name = parameters.getOrDefault(join(containersKey, id, NAME), id);
                 String image = parameters.get(join(containersKey, id, IMAGE));
 
+                if(image.startsWith(HTTP_PREFIX)) {
+                    image = image.substring(HTTP_PREFIX.length());
+                } else if(image.startsWith(HTTPS_PREFIX)) {
+                    image = image.substring(HTTPS_PREFIX.length());
+                }
+
                 Map<String, Map<String, String>> ports = getAsMapByGroupId(join(containersKey, id, PORTS), properties, 0);
                 Map<String, Map<String, String>> env = getAsMapByGroupId(join(containersKey, id, ENV), properties, 0);
                 Map<String, Map<String, String>> mounts = getAsMapByGroupId(join(containersKey, id, MOUNTS), properties, 0);
