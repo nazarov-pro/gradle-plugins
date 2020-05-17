@@ -30,6 +30,9 @@ public final class PodTemplate<R extends DefaultK8sObject>
     }
 
     public PodTemplateSpec<PodTemplate<R>> spec() {
+        if(specification != null) {
+            return specification;
+        }
         return new PodTemplateSpec<>(this, this::spec);
     }
 

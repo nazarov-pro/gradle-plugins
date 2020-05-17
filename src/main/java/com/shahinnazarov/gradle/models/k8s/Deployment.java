@@ -34,6 +34,9 @@ public final class Deployment implements DefaultK8sResource<Deployment> {
     }
 
     public DeploymentSpecification<Deployment> spec() {
+        if(specification != null) {
+            return specification;
+        }
         return new DeploymentSpecification<>(this, this::spec);
     }
 

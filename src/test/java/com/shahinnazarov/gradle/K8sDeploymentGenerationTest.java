@@ -24,17 +24,19 @@ public class K8sDeploymentGenerationTest {
     public Properties getSingleService() {
         Properties properties = new Properties();
         properties.put("k8s.deploy.ns01/deploy01.name", "app-deployment");
+
         properties.put("k8s.deploy.ns01/deploy01.selector.labels.applicationName", "application11");
         properties.put("k8s.deploy.ns01/deploy01.replicas", "1");
         properties.put("k8s.deploy.ns01/deploy01.selectedNode", "appsVm");
         properties.put("k8s.deploy.ns01/deploy01.restart", "always");
         properties.put("k8s.deploy.ns01/deploy01.imagePullSecret", "deployment");
-        properties.put("k8s.deploy.ns01/deploy01.volumes.logs", "pvc:ns01.mynm-logs");
+        properties.put("k8s.deploy.ns01/deploy01.volumes.logs.type", "pvc");
+        properties.put("k8s.deploy.ns01/deploy01.volumes.logs.pvc.name", "mynm-logs");
 
         properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.image", "192.168.1.47:30006/engine-event-consumer:latest");
-        properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.ports.http", "8801");
-        properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.env.SPRING_PROFILES_ACTIVE", "production");
-        properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.mounts.logs", "/logs");
+        properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.ports.http.containerPort", "8801");
+        properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.env.SPRING_PROFILES_ACTIVE.value", "production");
+        properties.put("k8s.deploy.ns01/deploy01.containers.cnt-name.mounts.logs.mountPath", "/logs");
         return properties;
     }
 

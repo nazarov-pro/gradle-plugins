@@ -9,25 +9,18 @@ import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
-public class K8sPersistentVolumeClaimGenerationImpl implements ResourceGeneration<PersistentVolumeClaim> {
+public class PersistentVolumeClaimGenerationImpl implements ResourceGeneration<PersistentVolumeClaim> {
     private ContextTypes CONTEXT_TYPE = ContextTypes.PERSISTENT_VOLUME_CLAIM;
 
     @Override
     public PersistentVolumeClaim generate(String groupId, Properties properties) {
-        String name = extractId(CONTEXT_TYPE, groupId);
+        String name = getFromProperties(properties, getFullKey(groupId, NAME),
+                extractId(CONTEXT_TYPE, groupId));
 
-        if (properties.containsKey(getFullKey(groupId, NAME))) {
-            name = properties.getProperty(getFullKey(groupId, NAME));
-        }
-
-        List<String> accessModes = null;
-
-        if (properties.containsKey(getFullKey(groupId, ACCESS_MODES))) {
-            accessModes = new AccessModeConverter().convert(
-                    properties.getProperty(getFullKey(groupId, ACCESS_MODES)),
-                    STRING_ARRAY_SPLITTER_REGEX
-            );
-        }
+        List<String> accessModes = new AccessModeConverter().convert(
+                getFromProperties(properties, getFullKey(groupId, ACCESS_MODES)),
+                STRING_ARRAY_SPLITTER_REGEX
+        );
 
         return PersistentVolumeClaim.
                 instance()
@@ -40,10 +33,10 @@ public class K8sPersistentVolumeClaimGenerationImpl implements ResourceGeneratio
                 .spec()
                 .accessModes(accessModes)
                 .resources()
-                .limits(getAsMap(getFullKey(groupId, RESOURCE_LIMITS), properties))
-                .requests(getAsMap(getFullKey(groupId, RESOURCE_REQUESTS), properties))
+                .limits(getAsMap(getFullKey(groupId, RESOURCES_LIMITS), properties))
+                .requests(getAsMap(getFullKey(groupId, RESOURCES_REQUESTS), properties))
                 .buildResources()
-                .storageClassName(properties.getProperty(getFullKey(groupId, STORAGE_CLASS_NAME)))
+                .storageClassName(getFromProperties(properties, getFullKey(groupId, STORAGE_CLASS_NAME)))
                 .buildPvcSpec()
                 .buildPersistentVolumeClaim();
 

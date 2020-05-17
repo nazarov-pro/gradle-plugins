@@ -64,7 +64,7 @@ public final class VolumeMount<R extends DefaultK8sObject> extends AbstractK8sOb
         return this;
     }
 
-    public R buildVolumeDevice() {
+    public R buildVolumeMount() {
         listener.apply(this);
         return result;
     }

@@ -16,8 +16,8 @@ public final class DeploymentStrategy<R extends DefaultK8sObject>
         super(result, listener);
     }
 
-    private static final String TYPE_ROLLING_UPDATE = "RollingUpdate";
-    private static final String TYPE_RECREATE = "Recreate";
+    public static final String TYPE_ROLLING_UPDATE = "RollingUpdate";
+    public static final String TYPE_RECREATE = "Recreate";
 
     @JsonProperty("type")
     private String type;

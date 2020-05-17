@@ -64,7 +64,7 @@ public class YamlExportingTest {
                 .addVolumeMount()
                 .mountPath("/logs")
                 .name("logs")
-                .buildVolumeDevice()
+                .buildVolumeMount()
                 .buildContainer()
                 .addVolume()
                 .name("logs")

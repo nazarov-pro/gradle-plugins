@@ -22,6 +22,6 @@ public class AccessModeConverter {
         for(String item : listOfData.split(splitter)) {
             list.add(convert(item.trim()));
         }
-        return list;
+        return list.isEmpty() ? null : list;
     }
 }

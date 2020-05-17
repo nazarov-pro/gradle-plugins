@@ -11,6 +11,7 @@ public enum ContextTypes {
     PERSISTENT_VOLUME_CLAIM("pvc"),
     SERVICE("svc"),
     DEPLOYMENT("deploy"),
+    STATEFUL_SET("ss"),
     UNKNOWN("unknown");
 
     private String prefix;

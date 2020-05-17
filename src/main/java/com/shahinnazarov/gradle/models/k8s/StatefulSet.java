@@ -16,7 +16,7 @@ public final class StatefulSet implements DefaultK8sResource<StatefulSet> {
     }
 
     @JsonProperty("kind")
-    private String kind = "Deployment";
+    private String kind = "StatefulSet";
     @JsonProperty("apiVersion")
     private String apiVersion = "apps/v1";
     @JsonProperty("metadata")
@@ -34,6 +34,9 @@ public final class StatefulSet implements DefaultK8sResource<StatefulSet> {
     }
 
     public StatefulSetSpec<StatefulSet> spec() {
+        if(specification != null) {
+            return specification;
+        }
         return new StatefulSetSpec<>(this, this::spec);
     }
 
@@ -57,7 +60,7 @@ public final class StatefulSet implements DefaultK8sResource<StatefulSet> {
         return metadata;
     }
 
-    public StatefulSet buildDeployment() {
+    public StatefulSet build() {
         return this;
     }
 

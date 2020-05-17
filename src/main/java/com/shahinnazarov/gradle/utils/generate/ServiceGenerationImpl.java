@@ -8,16 +8,12 @@ import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
-public class K8sServiceGenerationImpl implements ResourceGeneration<Service> {
+public class ServiceGenerationImpl implements ResourceGeneration<Service> {
     private ContextTypes CONTEXT_TYPE = ContextTypes.SERVICE;
 
     @Override
     public Service generate(String groupId, Properties properties) {
-        String name = extractId(CONTEXT_TYPE, groupId);
-
-        if (properties.containsKey(getFullKey(groupId, NAME))) {
-            name = properties.getProperty(getFullKey(groupId, NAME));
-        }
+        String name = getFromProperties(properties, getFullKey(groupId, NAME), extractId(CONTEXT_TYPE, groupId));
 
         Service service = Service
                 .instance()
@@ -29,7 +25,7 @@ public class K8sServiceGenerationImpl implements ResourceGeneration<Service> {
                 .buildMetadata()
                 .spec()
                 .selector(getAsMap(getFullKey(groupId, SELECTOR), properties))
-                .type(properties.getProperty(getFullKey(groupId, TYPE)))
+                .type(getFromProperties(properties, getFullKey(groupId, TYPE)))
                 .build()
                 .buildService();
 
@@ -53,13 +49,13 @@ public class K8sServiceGenerationImpl implements ResourceGeneration<Service> {
 
                 String targetPort = parameters.get(join(portsKey, id, TARGET_PORT));
                 Integer targetPortNumber = null;
-                if (port != null) {
+                if (targetPort != null) {
                     targetPortNumber = Integer.parseInt(targetPort);
                 }
 
                 String nodePort = parameters.get(join(portsKey, id, NODE_PORT));
                 Integer nodePortNumber = null;
-                if (port != null) {
+                if (nodePort != null) {
                     nodePortNumber = Integer.parseInt(nodePort);
                 }
                 service.spec()

@@ -5,21 +5,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder(
         {
-                "apiVersion",
-                "kind",
                 "metadata",
                 "spec"
         }
 )
 public final class PersistentVolumeClaimTemplate<R extends DefaultK8sObject> extends AbstractK8sObject<R, PersistentVolumeClaimTemplate<R>> {
 
-
-    @JsonProperty("kind")
-    private String kind = "PersistentVolumeClaim";
     @JsonProperty("metadata")
     private Metadata<PersistentVolumeClaimTemplate<R>> metadata;
-    @JsonProperty("apiVersion")
-    private String apiVersion = "v1";
     @JsonProperty("spec")
     private PersistentVolumeClaimSpec<PersistentVolumeClaimTemplate<R>> spec;
 

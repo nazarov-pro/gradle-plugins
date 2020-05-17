@@ -53,9 +53,9 @@ pluginBundle {
 
 dependencies {
     implementation gradleApi()
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
-    compile 'org.apache.commons:commons-lang3:3.4'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+    implementation 'org.apache.commons:commons-lang3:3.4'
     implementation "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation "junit:junit:${junitVersion}"

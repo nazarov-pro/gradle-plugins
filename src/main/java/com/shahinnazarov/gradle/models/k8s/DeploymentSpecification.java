@@ -89,6 +89,9 @@ public final class DeploymentSpecification<R extends DefaultK8sObject>
 
 
     public PodTemplate<DeploymentSpecification<R>> podTemplate() {
+        if(podTemplate != null) {
+            return podTemplate;
+        }
         return new PodTemplate<>(this, this::podTemplate);
     }
 

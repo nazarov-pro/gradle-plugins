@@ -54,6 +54,12 @@ public final class StatefulSetSpec<R extends DefaultK8sObject>
         return this;
     }
 
+
+    public StatefulSetSpec<R> serviceName(String serviceName) {
+        this.serviceName = serviceName;
+        return this;
+    }
+
     public StatefulSetSpec<R> selector(
             LabelSelector<StatefulSetSpec<R>> labelSelector
     ) {
@@ -62,6 +68,9 @@ public final class StatefulSetSpec<R extends DefaultK8sObject>
     }
 
     public LabelSelector<StatefulSetSpec<R>> selector() {
+        if(labelSelector != null) {
+            return labelSelector;
+        }
         return new LabelSelector<>(this, this::selector);
     }
 
@@ -73,11 +82,17 @@ public final class StatefulSetSpec<R extends DefaultK8sObject>
     }
 
     public StatefulSetUpdateStrategy<StatefulSetSpec<R>> updateStrategy() {
+        if(updateStrategy != null) {
+            return updateStrategy;
+        }
         return new StatefulSetUpdateStrategy<>(this, this::updateStrategy);
     }
 
 
     public PodTemplate<StatefulSetSpec<R>> podTemplate() {
+        if(podTemplate != null) {
+            return podTemplate;
+        }
         return new PodTemplate<>(this, this::podTemplate);
     }
 

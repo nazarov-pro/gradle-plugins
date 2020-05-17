@@ -7,14 +7,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
-import com.shahinnazarov.gradle.models.k8s.Deployment;
-import com.shahinnazarov.gradle.models.k8s.Namespace;
-import com.shahinnazarov.gradle.models.k8s.PersistentVolumeClaim;
-import com.shahinnazarov.gradle.models.k8s.Service;
-import com.shahinnazarov.gradle.utils.generate.K8sDeploymentGenerationImpl;
-import com.shahinnazarov.gradle.utils.generate.K8sNamespaceGenerationImpl;
-import com.shahinnazarov.gradle.utils.generate.K8sPersistentVolumeClaimGenerationImpl;
-import com.shahinnazarov.gradle.utils.generate.K8sServiceGenerationImpl;
+import com.shahinnazarov.gradle.models.k8s.*;
+import com.shahinnazarov.gradle.utils.generate.*;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,17 +18,26 @@ import java.util.Properties;
 public class K8sContext {
     public static K8sContext k8sContext;
 
-    private Map<String, Namespace> namespaceMap;
-    private Map<String, PersistentVolumeClaim> persistentVolumeClaimMap;
-    private Map<String, Service> serviceMap;
-    private Map<String, Deployment> deploymentMap;
+    private final Map<String, Namespace> namespaceMap;
+    private final Map<String, PersistentVolumeClaim> persistentVolumeClaimMap;
+    private final Map<String, Service> serviceMap;
+    private final Map<String, Deployment> deploymentMap;
+    private final Map<String, StatefulSet> stringStatefulSetMap;
+
+    private static Properties PROPERTIES_CONTEXT;
 
     private K8sContext(Properties properties) {
         namespaceMap = new HashMap<>();
         persistentVolumeClaimMap = new HashMap<>();
         serviceMap = new HashMap<>();
         deploymentMap = new HashMap<>();
+        stringStatefulSetMap = new HashMap<>();
+        PROPERTIES_CONTEXT = properties;
         generate(properties);
+    }
+
+    public static Properties getPropertiesContext() {
+        return PROPERTIES_CONTEXT;
     }
 
     public static K8sContext getInstance() {
@@ -76,16 +79,20 @@ public class K8sContext {
         propertiesMap.forEach((key, value) -> {
             switch (ContextTypes.getContextType(key)) {
                 case NAMESPACE:
-                    namespaceMap.put(key, new K8sNamespaceGenerationImpl().generate(key, value));
+                    namespaceMap.put(key, new NamespaceGenerationImpl().generate(key, value));
                     break;
                 case PERSISTENT_VOLUME_CLAIM:
-                    persistentVolumeClaimMap.put(key, new K8sPersistentVolumeClaimGenerationImpl().generate(key, value));
+                    persistentVolumeClaimMap.put(key, new PersistentVolumeClaimGenerationImpl().generate(key, value));
                     break;
                 case SERVICE:
-                    serviceMap.put(key, new K8sServiceGenerationImpl().generate(key, value));
+                    serviceMap.put(key, new ServiceGenerationImpl().generate(key, value));
                     break;
                 case DEPLOYMENT:
-                    deploymentMap.put(key, new K8sDeploymentGenerationImpl().generate(key, value));
+                    deploymentMap.put(key, new DeploymentGenerationImpl().generate(key, value));
+                    break;
+                case STATEFUL_SET:
+                    stringStatefulSetMap.put(key, new StatefulSetGenerationImpl().generate(key, value));
+                    break;
             }
         });
     }
@@ -118,6 +125,14 @@ public class K8sContext {
         return deploymentMap.values();
     }
 
+    public StatefulSet getStatefulSet(String key) {
+        return stringStatefulSetMap.get(ContextTypes.STATEFUL_SET.generateGroupId(key));
+    }
+
+    public Collection<StatefulSet> getStatefulSets() {
+        return stringStatefulSetMap.values();
+    }
+
     public Service getService(String key) {
         return serviceMap.get(ContextTypes.SERVICE.generateGroupId(key));
     }
@@ -140,4 +155,42 @@ public class K8sContext {
         }
         return result;
     }
+
+    public String getAsYaml() {
+        StringBuilder result = new StringBuilder();
+
+        getNamespaces().forEach(namespace -> {
+            result.append(getAsYaml(namespace));
+            result.append(Constants.YAML_RESOURCE_SEPARATOR);
+            result.append("\n");
+        });
+
+        getPersistentVolumeClaims().forEach(persistentVolumeClaim -> {
+            result.append(getAsYaml(persistentVolumeClaim));
+            result.append(Constants.YAML_RESOURCE_SEPARATOR);
+            result.append("\n");
+        });
+
+        getServices().forEach(service -> {
+            result.append(getAsYaml(service));
+            result.append(Constants.YAML_RESOURCE_SEPARATOR);
+            result.append("\n");
+        });
+
+        getDeployments().forEach(deployment -> {
+            result.append(getAsYaml(deployment));
+            result.append(Constants.YAML_RESOURCE_SEPARATOR);
+            result.append("\n");
+        });
+
+
+        getStatefulSets().forEach(statefulSet -> {
+            result.append(getAsYaml(statefulSet));
+            result.append(Constants.YAML_RESOURCE_SEPARATOR);
+            result.append("\n");
+        });
+
+        return result.toString();
+    }
+
 }

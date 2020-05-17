@@ -7,16 +7,12 @@ import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
-public class K8sNamespaceGenerationImpl implements ResourceGeneration<Namespace> {
+public class NamespaceGenerationImpl implements ResourceGeneration<Namespace> {
     private ContextTypes CONTEXT_TYPE = ContextTypes.NAMESPACE;
 
     @Override
     public Namespace generate(String groupId, Properties properties) {
-        String name = extractId(CONTEXT_TYPE, groupId);
-
-        if (properties.containsKey(getFullKey(groupId, NAME))) {
-            name = properties.getProperty(getFullKey(groupId, NAME));
-        }
+        String name = getFromProperties(properties, getFullKey(groupId, NAME), extractId(CONTEXT_TYPE, groupId));
 
         return Namespace.instance()
                 .metadata()

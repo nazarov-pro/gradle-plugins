@@ -3,6 +3,7 @@ package com.shahinnazarov.gradle.utils.generate;
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.DefaultK8sResource;
 import com.shahinnazarov.gradle.models.k8s.Metadata;
+import com.shahinnazarov.gradle.utils.K8sContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +13,6 @@ import static com.shahinnazarov.gradle.utils.Constants.*;
 
 public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
     E generate(String groupId, Properties properties);
-
-    default Metadata<E> generateMetadata(E element) {
-        Metadata<E> metadata = element.getMetadata();
-
-        return metadata;
-    }
 
     default String extractId(ContextTypes contextType, String groupId) {
         return contextType.getId(groupId);
@@ -78,13 +73,45 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
         return map.size() == 0 ? null : map;
     }
 
-
     default String getNamespace(String id) {
         String[] namespaceAndId = id.split("/");
         if (namespaceAndId.length == 2) {
-            return namespaceAndId[0];
+            String namespace = namespaceAndId[0];
+            return getFromGlobal(getFullKey(ContextTypes.NAMESPACE.generateGroupId(namespace), NAME), namespace);
         }
         return "default";
     }
 
+    default String getFromGlobal(String id, String defaultValue) {
+        Properties properties = K8sContext.getPropertiesContext();
+        return getFromProperties(properties, id, defaultValue);
+    }
+
+    default String getFromGlobal(String id) {
+        return getFromGlobal(id, null);
+    }
+
+    default String getFromProperties(Properties properties, String id, String defaultValue) {
+        return properties.getProperty(id, defaultValue);
+    }
+
+    default String getFromProperties(Properties properties, String id) {
+        return getFromProperties(properties, id, null);
+    }
+
+    default boolean containsKey(String id) {
+        return getFromGlobal(id) != null;
+    }
+
+    default boolean containsKey(Properties properties, String id) {
+        return getFromProperties(properties, id) != null;
+    }
+
+    default Integer getFromPropertiesAsInteger(Properties properties, String id) {
+        String value = getFromProperties(properties, id);
+        if(value != null) {
+            return Integer.parseInt(value);
+        }
+        return null;
+    }
 }
