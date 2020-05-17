@@ -2,6 +2,7 @@ package com.shahinnazarov.gradle.utils;
 
 public final class Constants {
     public static final String K8S_PREFIX = "k8s";
+    public static final String VARIABLE = "var";
     public static final String YAML_RESOURCE_SEPARATOR = "---";
 
     public static final String STRING_ARRAY_SPLITTER_REGEX = "\\|";

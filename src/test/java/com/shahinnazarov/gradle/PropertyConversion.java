@@ -11,7 +11,7 @@ import java.util.Properties;
 public class PropertyConversion {
     public static void main(String[] args) throws IOException {
         InputStream resourceAsStream =
-                PropertyConversion.class.getClassLoader().getResourceAsStream("ss.template.properties");
+                PropertyConversion.class.getClassLoader().getResourceAsStream("k8s-el.template.properties");
         Properties properties = new Properties();
         properties.load(resourceAsStream);
         K8sContext.initialize(properties);

@@ -2,8 +2,8 @@ package com.shahinnazarov.gradle.utils.generate;
 
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.DefaultK8sResource;
-import com.shahinnazarov.gradle.models.k8s.Metadata;
 import com.shahinnazarov.gradle.utils.K8sContext;
+import com.shahinnazarov.gradle.utils.generate.impl.ExpressionSupplierImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,8 @@ import java.util.Properties;
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
 public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
+    ExpressionSupplier EXPRESSION_SUPPLIER = new ExpressionSupplierImpl();
+
     E generate(String groupId, Properties properties);
 
     default String extractId(ContextTypes contextType, String groupId) {
@@ -44,12 +46,13 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
                             String key = entry.getKey().toString();
                             if (key.endsWith("." + KEY)) {
                                 String valueKey = key.substring(0, key.length() - KEY.length()).concat(VALUE);
-                                String value = properties.getProperty(valueKey);
+                                String value = getFromProperties(properties, valueKey);
                                 map.put(entry.getValue().toString(), value);
                             } else if (key.endsWith("." + VALUE)) {
                                 //
                             } else {
-                                map.put(key.substring(keyPrefix.length() + 1), entry.getValue().toString());
+                                map.put(key.substring(keyPrefix.length() + 1),
+                                        EXPRESSION_SUPPLIER.applyExpressions(entry.getValue().toString()));
                             }
                         }
                 );
@@ -66,7 +69,7 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
                             String key = entry.getKey().toString();
                             String id = key.substring(keyPrefix.length() + 1).split(KEY_SPLITTER_REGEX)[groupId];
                             Map<String, String> parameters = map.getOrDefault(id, new HashMap<String, String>());
-                            parameters.put(key, entry.getValue().toString());
+                            parameters.put(key, EXPRESSION_SUPPLIER.applyExpressions(entry.getValue().toString()));
                             map.put(id, parameters);
                         }
                 );
@@ -77,22 +80,23 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
         String[] namespaceAndId = id.split("/");
         if (namespaceAndId.length == 2) {
             String namespace = namespaceAndId[0];
-            return getFromGlobal(getFullKey(ContextTypes.NAMESPACE.generateGroupId(namespace), NAME), namespace);
+            return getFromContext(getFullKey(ContextTypes.NAMESPACE.generateGroupId(namespace), NAME), namespace);
         }
         return "default";
     }
 
-    default String getFromGlobal(String id, String defaultValue) {
+    default String getFromContext(String id, String defaultValue) {
         Properties properties = K8sContext.getPropertiesContext();
         return getFromProperties(properties, id, defaultValue);
     }
 
-    default String getFromGlobal(String id) {
-        return getFromGlobal(id, null);
+    default String getFromContext(String id) {
+        return getFromContext(id, null);
     }
 
     default String getFromProperties(Properties properties, String id, String defaultValue) {
-        return properties.getProperty(id, defaultValue);
+        String value = properties.getProperty(id, defaultValue);
+        return EXPRESSION_SUPPLIER.applyExpressions(value);
     }
 
     default String getFromProperties(Properties properties, String id) {
@@ -100,7 +104,7 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
     }
 
     default boolean containsKey(String id) {
-        return getFromGlobal(id) != null;
+        return getFromContext(id) != null;
     }
 
     default boolean containsKey(Properties properties, String id) {
@@ -113,5 +117,10 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
             return Integer.parseInt(value);
         }
         return null;
+    }
+
+    default String expression(String value) {
+        String regex = "${}";
+        return value;
     }
 }

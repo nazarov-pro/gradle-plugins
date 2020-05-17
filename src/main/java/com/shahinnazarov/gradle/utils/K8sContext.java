@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.*;
-import com.shahinnazarov.gradle.utils.generate.*;
+import com.shahinnazarov.gradle.utils.generate.impl.*;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -162,32 +162,32 @@ public class K8sContext {
         getNamespaces().forEach(namespace -> {
             result.append(getAsYaml(namespace));
             result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n");
+            result.append("\n\n");
         });
 
         getPersistentVolumeClaims().forEach(persistentVolumeClaim -> {
             result.append(getAsYaml(persistentVolumeClaim));
             result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n");
+            result.append("\n\n");
         });
 
         getServices().forEach(service -> {
             result.append(getAsYaml(service));
             result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n");
+            result.append("\n\n");
         });
 
         getDeployments().forEach(deployment -> {
             result.append(getAsYaml(deployment));
             result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n");
+            result.append("\n\n");
         });
 
 
         getStatefulSets().forEach(statefulSet -> {
             result.append(getAsYaml(statefulSet));
             result.append(Constants.YAML_RESOURCE_SEPARATOR);
-            result.append("\n");
+            result.append("\n\n");
         });
 
         return result.toString();

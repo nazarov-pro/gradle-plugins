@@ -1,7 +1,8 @@
-package com.shahinnazarov.gradle.utils.generate;
+package com.shahinnazarov.gradle.utils.generate.impl;
 
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.*;
+import com.shahinnazarov.gradle.utils.generate.ResourceGeneration;
 
 import java.util.Map;
 import java.util.Properties;
