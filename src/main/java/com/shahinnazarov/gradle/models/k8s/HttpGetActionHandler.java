@@ -28,7 +28,7 @@ public final class HttpGetActionHandler<R extends DefaultK8sObject> extends Abst
     @JsonProperty("path")
     private String path;
     @JsonProperty("port")
-    private String port;
+    private Object port;
     @JsonProperty("scheme")
     private String scheme;
 
@@ -54,7 +54,7 @@ public final class HttpGetActionHandler<R extends DefaultK8sObject> extends Abst
         return this;
     }
 
-    public HttpGetActionHandler<R> port(String port) {
+    public HttpGetActionHandler<R> port(Object port) {
         this.port = port;
         return this;
     }

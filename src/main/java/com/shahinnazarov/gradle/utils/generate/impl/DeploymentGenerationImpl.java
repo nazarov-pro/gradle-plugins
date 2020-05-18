@@ -29,7 +29,6 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                 .replicas(getFromPropertiesAsInteger(properties, getFullKey(groupId, REPLICAS)))
                 .podTemplate()
                 .spec()
-                .nodeName(getFromProperties(properties, getFullKey(groupId, SELECTED_NODE)))
                 .addImagePullSecret()
                 .name(getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET)))
                 .buildImagePullSecret()
@@ -38,6 +37,16 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                 .buildPodTemplate()
                 .buildSpecification()
                 .buildDeployment();
+
+        String nodeSelector = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));
+        if (nodeSelector != null) {
+            deployment.spec().podTemplate()
+                    .spec().addNodeSelector(KUBERNETES_HOSTNAME, nodeSelector)
+                    .buildPodTemplateSpec()
+                    .buildPodTemplate()
+                    .buildSpecification()
+                    .buildDeployment();
+        }
 
         configureStrategy(groupId, properties, deployment);
         configureSelectors(groupId, properties, deployment);
@@ -65,7 +74,7 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                         podTemplateSpecPodVolume
                                 .name(name)
                                 .pvc()
-                                .name(pvcName)
+                                .claimName(pvcName)
                                 .buildPvc();
                         break;
                 }
@@ -88,9 +97,9 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
             containers.forEach((id, parameters) -> {
                 String name = parameters.getOrDefault(join(containersKey, id, NAME), id);
                 String image = parameters.get(join(containersKey, id, IMAGE));
-                if(image.startsWith(HTTP_PREFIX)) {
+                if (image.startsWith(HTTP_PREFIX)) {
                     image = image.substring(HTTP_PREFIX.length());
-                } else if(image.startsWith(HTTPS_PREFIX)) {
+                } else if (image.startsWith(HTTPS_PREFIX)) {
                     image = image.substring(HTTPS_PREFIX.length());
                 }
 
@@ -141,7 +150,7 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                         "none");
                 switch (readinessProbeType) {
                     case "http":
-                        String readinessProbePort = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PORT));
+                        Object readinessProbePort = getFromPropertiesAsIntegerOrString(properties, join(containersKey, id, READINESS_PROBE, PORT));
                         String readinessProbePath = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PATH));
                         Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, INITIAL_DELAY));
                         Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, PERIOD_SECONDS));
@@ -167,7 +176,7 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
 
                 switch (livenessProbeType) {
                     case "http":
-                        String livenessProbePort = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PORT));
+                        Object livenessProbePort = getFromPropertiesAsIntegerOrString(properties, join(containersKey, id, LIVENESS_PROBE, PORT));
                         String livenessProbePath = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PATH));
                         Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, INITIAL_DELAY));
                         Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, PERIOD_SECONDS));
@@ -191,7 +200,7 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                 Map<String, String> requests = getAsMap(join(containersKey, id, RESOURCES_REQUESTS), properties);
                 Map<String, String> limits = getAsMap(join(containersKey, id, RESOURCES_LIMITS), properties);
 
-                if(requests != null || limits != null) {
+                if (requests != null || limits != null) {
                     container.resources()
                             .requests(requests)
                             .limits(limits)
@@ -206,7 +215,7 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
     private void configureSelectors(String groupId, Properties properties, Deployment deployment) {
         String selectorKey = getFullKey(groupId, SELECTOR);
         Map<String, String> labels = getAsMap(join(selectorKey, LABELS), properties);
-        if(labels != null) {
+        if (labels != null) {
             labels.forEach((key, value) -> {
                 deployment
                         .spec()
@@ -238,8 +247,8 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment> 
                         .buildDeployment();
                 break;
             case ROLLING_UPDATE:
-                String rollingUpdateMaxSurge = getFromProperties(properties, join(strategyKey, ROLLING_UPDATE, MAX_SURGE));
-                String rollingUpdateMaxUnavailable = getFromProperties(properties, join(strategyKey, ROLLING_UPDATE, MAX_UNAVAILABLE));
+                Object rollingUpdateMaxSurge = getFromPropertiesAsIntegerOrString(properties, join(strategyKey, ROLLING_UPDATE, MAX_SURGE));
+                Object rollingUpdateMaxUnavailable = getFromPropertiesAsIntegerOrString(properties, join(strategyKey, ROLLING_UPDATE, MAX_UNAVAILABLE));
 
                 deployment.spec().deploymentStrategy()
                         .rollingUpdate()

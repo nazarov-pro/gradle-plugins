@@ -37,7 +37,7 @@ public final class DeploymentSpecification<R extends DefaultK8sObject>
     private LabelSelector<DeploymentSpecification<R>> labelSelector;
     @JsonProperty("strategy")
     private DeploymentStrategy<DeploymentSpecification<R>> deploymentStrategy;
-    @JsonProperty("podTemplate")
+    @JsonProperty("template")
     private PodTemplate<DeploymentSpecification<R>> podTemplate;
 
     public DeploymentSpecification<R> replicas(Integer count) {

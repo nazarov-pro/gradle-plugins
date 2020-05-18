@@ -119,6 +119,18 @@ public interface ResourceGeneration<E extends DefaultK8sResource<E>> {
         return null;
     }
 
+    default Object getFromPropertiesAsIntegerOrString(Properties properties, String id) {
+        String value = getFromProperties(properties, id);
+        if(value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException numberFormatException) {
+                return value;
+            }
+        }
+        return null;
+    }
+
     default String expression(String value) {
         String regex = "${}";
         return value;

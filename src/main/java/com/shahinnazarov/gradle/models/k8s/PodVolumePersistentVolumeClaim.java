@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder(
         {
-                "name",
+                "claimName",
                 "readOnly"
         }
 )
@@ -15,13 +15,13 @@ public final class PodVolumePersistentVolumeClaim<R extends DefaultK8sObject> ex
         super(result, listener);
     }
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("claimName")
+    private String claimName;
     @JsonProperty("readOnly")
     private Boolean readOnly;
 
-    public PodVolumePersistentVolumeClaim<R> name(String name) {
-        this.name = name;
+    public PodVolumePersistentVolumeClaim<R> claimName(String claimName) {
+        this.claimName = claimName;
         return this;
     }
 

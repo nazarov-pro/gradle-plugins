@@ -32,7 +32,6 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                 .replicas(getFromPropertiesAsInteger(properties, getFullKey(groupId, REPLICAS)))
                 .podTemplate()
                 .spec()
-                .nodeName(getFromProperties(properties, getFullKey(groupId, SELECTED_NODE)))
                 .addImagePullSecret()
                 .name(getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET)))
                 .buildImagePullSecret()
@@ -41,6 +40,16 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                 .buildPodTemplate()
                 .buildSpec()
                 .build();
+
+        String nodeSelector = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));
+        if (nodeSelector != null) {
+            statefulSet.spec().podTemplate()
+                    .spec().addNodeSelector(KUBERNETES_HOSTNAME, nodeSelector)
+                    .buildPodTemplateSpec()
+                    .buildPodTemplate()
+                    .buildSpec()
+                    .build();
+        }
 
         configureStrategy(groupId, properties, statefulSet);
         configureSelectors(groupId, properties, statefulSet);
@@ -70,7 +79,7 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                         podTemplateSpecPodVolume
                                 .name(name)
                                 .pvc()
-                                .name(pvcName)
+                                .claimName(pvcName)
                                 .buildPvc();
                         break;
                 }
@@ -148,7 +157,7 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                         "none");
                 switch (readinessProbeType) {
                     case "http":
-                        String readinessProbePort = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PORT));
+                        Object readinessProbePort = getFromPropertiesAsIntegerOrString(properties, join(containersKey, id, READINESS_PROBE, PORT));
                         String readinessProbePath = getFromProperties(properties, join(containersKey, id, READINESS_PROBE, PATH));
                         Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, INITIAL_DELAY));
                         Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, READINESS_PROBE, PERIOD_SECONDS));
@@ -174,7 +183,7 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
 
                 switch (livenessProbeType) {
                     case "http":
-                        String livenessProbePort = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PORT));
+                        Object livenessProbePort = getFromPropertiesAsIntegerOrString(properties, join(containersKey, id, LIVENESS_PROBE, PORT));
                         String livenessProbePath = getFromProperties(properties, join(containersKey, id, LIVENESS_PROBE, PATH));
                         Integer initialDelaySeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, INITIAL_DELAY));
                         Integer periodSeconds = getFromPropertiesAsInteger(properties, join(containersKey, id, LIVENESS_PROBE, PERIOD_SECONDS));

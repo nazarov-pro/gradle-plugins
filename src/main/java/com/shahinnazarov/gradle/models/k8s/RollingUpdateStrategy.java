@@ -17,16 +17,16 @@ public final class RollingUpdateStrategy<R extends DefaultK8sObject>
     }
 
     @JsonProperty("maxSurge")
-    private String maxSurge;
+    private Object maxSurge;
     @JsonProperty("maxUnavailable")
-    private String maxUnavailable;
+    private Object maxUnavailable;
 
-    public RollingUpdateStrategy<R> maxSurge(String maxSurge) {
+    public RollingUpdateStrategy<R> maxSurge(Object maxSurge) {
         this.maxSurge = maxSurge;
         return this;
     }
 
-    public RollingUpdateStrategy<R> maxUnavailable(String maxUnavailable) {
+    public RollingUpdateStrategy<R> maxUnavailable(Object maxUnavailable) {
         this.maxUnavailable = maxUnavailable;
         return this;
     }
