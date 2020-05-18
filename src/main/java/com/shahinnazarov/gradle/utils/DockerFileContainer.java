@@ -83,8 +83,13 @@ public class DockerFileContainer {
             }
 
             subSteps.add(String.format(
-               "RUN groupadd -g %d %s && useradd -r -u %d -g %s %s", runInGroupId, runInGroup,
+               "RUN addgroup -g %d %s && \\\n" +
+                       "    adduser -D -u %d -G %s %s", runInGroupId, runInGroup,
                     runAsUserId, runInGroup, runAsUser
+            ));
+
+            subSteps.add(String.format(
+                    "chown -R %s:%s $s", runAsUser, runInGroup, workDir
             ));
 
             subSteps.add(String.format(
