@@ -89,7 +89,7 @@ public class DockerFileContainer {
             ));
 
             subSteps.add(String.format(
-                    "chown -R %s:%s $s", runAsUser, runInGroup, workDir
+                    "RUN chown -R %s:%s %s", runAsUser, runInGroup, workDir
             ));
 
             subSteps.add(String.format(
