@@ -5,6 +5,9 @@ import com.shahinnazarov.gradle.extensions.DockerFileConfig;
 import com.shahinnazarov.gradle.tasks.DockerFileTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+
+import java.util.Set;
 
 public class DockerFilePlugin implements Plugin<Project> {
     @Override
@@ -12,6 +15,8 @@ public class DockerFilePlugin implements Plugin<Project> {
         project.getExtensions().create("DockerFile", DockerFile.class);
         project.getExtensions().create("DockerFileConfig", DockerFileConfig.class);
         project.getTasks().create("generateDockerFile", DockerFileTask.class);
-        project.getTasks().getByName("build").finalizedBy("generateDockerFile");
+
+        Set<Task> buildTaskSet = project.getTasksByName("build", true);
+        buildTaskSet.forEach(buildTask -> buildTask.finalizedBy("generateK8sFile"));
     }
 }
