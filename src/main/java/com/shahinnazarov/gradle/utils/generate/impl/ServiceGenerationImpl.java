@@ -3,13 +3,14 @@ package com.shahinnazarov.gradle.utils.generate.impl;
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.Service;
 import com.shahinnazarov.gradle.utils.generate.ResourceGeneration;
+import com.shahinnazarov.gradle.utils.generate.ResourceGenerationHelper;
 
 import java.util.Map;
 import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
-public class ServiceGenerationImpl implements ResourceGeneration<Service> {
+public class ServiceGenerationImpl implements ResourceGeneration<Service>, ResourceGenerationHelper {
     private ContextTypes CONTEXT_TYPE = ContextTypes.SERVICE;
 
     @Override

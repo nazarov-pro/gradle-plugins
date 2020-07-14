@@ -4,13 +4,14 @@ import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.PersistentVolumeClaim;
 import com.shahinnazarov.gradle.utils.converter.AccessModeConverter;
 import com.shahinnazarov.gradle.utils.generate.ResourceGeneration;
+import com.shahinnazarov.gradle.utils.generate.ResourceGenerationHelper;
 
 import java.util.List;
 import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
-public class PersistentVolumeClaimGenerationImpl implements ResourceGeneration<PersistentVolumeClaim> {
+public class PersistentVolumeClaimGenerationImpl implements ResourceGeneration<PersistentVolumeClaim>, ResourceGenerationHelper {
     private ContextTypes CONTEXT_TYPE = ContextTypes.PERSISTENT_VOLUME_CLAIM;
 
     @Override

@@ -67,4 +67,17 @@ public final class Constants {
     public static final String KUBERNETES_HOSTNAME = "kubernetes.io/hostname";
     public static final String HTTPS_PREFIX = "https://";
 
+    public static final String VALUE_FROM = "valueFrom";
+    public static final String SECRET_KEY_REF = "secretKeyRef";
+    public static final String CONFIG_MAP_KEY_REF = "configMapKeyRef";
+    public static final String RESOURCE_FIELD_REF = "resourceFieldRef";
+    public static final String FIELD_REF = "fieldRef";
+    public static final String FIELD_PATH = "fieldPath";
+    public static final String API_VERSION = "apiVersion";
+    public static final String OPTIONAL = "optional";
+    public static final String CONTAINER_NAME = "containerName";
+    public static final String DIVISOR = "divisor";
+    public static final String RESOURCE = "resource";
+
+
 }

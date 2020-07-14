@@ -3,12 +3,13 @@ package com.shahinnazarov.gradle.utils.generate.impl;
 import com.shahinnazarov.gradle.models.enums.ContextTypes;
 import com.shahinnazarov.gradle.models.k8s.Namespace;
 import com.shahinnazarov.gradle.utils.generate.ResourceGeneration;
+import com.shahinnazarov.gradle.utils.generate.ResourceGenerationHelper;
 
 import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
 
-public class NamespaceGenerationImpl implements ResourceGeneration<Namespace> {
+public class NamespaceGenerationImpl implements ResourceGeneration<Namespace>, ResourceGenerationHelper {
     private ContextTypes CONTEXT_TYPE = ContextTypes.NAMESPACE;
 
     @Override
