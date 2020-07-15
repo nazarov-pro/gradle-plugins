@@ -30,10 +30,10 @@ public class K8sStatefulSetGenerationTest {
         properties.put("k8s.ss.ns01/ss01.selectedNode", "appsVm");
         properties.put("k8s.ss.ns01/ss01.restart", "always");
         properties.put("k8s.ss.ns01/ss01.imagePullSecret", "deployment");
-        properties.put("k8s.ss.ns01/ss01.volumes.logs.type", "pvc");
-        properties.put("k8s.ss.ns01/ss01.volumes.logs.pvc.name", "mynm-logs");
-        properties.put("k8s.ss.ns01/ss01.volumes.logs2.type", "pvc");
-        properties.put("k8s.ss.ns01/ss01.volumes.logs2.pvc.name", "mynm-logs");
+
+        properties.put("k8s.ss.ns01/ss01.volumeClaims.logs.name", "logs");
+        properties.put("k8s.ss.ns01/ss01.volumeClaims.logs.accessModes", "rwo");
+        properties.put("k8s.ss.ns01/ss01.volumeClaims.logs.resources.requests.storage", "5Gi");
 
         properties.put("k8s.ss.ns01/ss01.containers.cnt-name.image", "192.168.1.47:30006/engine-event-consumer:latest");
         properties.put("k8s.ss.ns01/ss01.containers.cnt-name.ports.http.containerPort", "8801");

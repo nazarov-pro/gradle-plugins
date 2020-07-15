@@ -38,7 +38,7 @@ public final class StatefulSetSpec<R extends DefaultK8sObject>
     private String serviceName;
     @JsonProperty("template")
     private PodTemplate<StatefulSetSpec<R>> podTemplate;
-    @JsonProperty("strategy")
+    @JsonProperty("updateStrategy")
     private StatefulSetUpdateStrategy<StatefulSetSpec<R>> updateStrategy;
     @JsonProperty("volumeClaimTemplates")
     private List<PersistentVolumeClaimTemplate<StatefulSetSpec<R>>> volumeClaimTemplates;

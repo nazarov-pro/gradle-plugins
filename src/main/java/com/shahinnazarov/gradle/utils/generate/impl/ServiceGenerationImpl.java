@@ -28,6 +28,7 @@ public class ServiceGenerationImpl implements ResourceGeneration<Service>, Resou
                 .spec()
                 .selector(getAsMap(getFullKey(groupId, SELECTOR), properties))
                 .type(getFromProperties(properties, getFullKey(groupId, TYPE)))
+                .clusterIP(getFromProperties(properties, getFullKey(groupId, CLUSTER_IP)))
                 .build()
                 .buildService();
 

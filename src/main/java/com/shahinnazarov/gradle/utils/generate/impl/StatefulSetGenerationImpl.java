@@ -97,11 +97,11 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                         .build();
                 break;
             case ROLLING_UPDATE:
-                Integer rollingUpdateMaxSurge = getFromPropertiesAsInteger(properties, join(strategyKey, ROLLING_UPDATE, MAX_SURGE));
+                Integer rollingUpdatePartition = getFromPropertiesAsInteger(properties, join(strategyKey, ROLLING_UPDATE, PARTITION));
 
                 statefulSet.spec().updateStrategy()
                         .rollingUpdate()
-                        .maxSurge(rollingUpdateMaxSurge)
+                        .partition(rollingUpdatePartition)
                         .buildRollingUpdate()
                         .buildUpdateStrategy()
                         .buildSpec()

@@ -15,11 +15,11 @@ public final class StatefulSetRollingUpdateStrategy<R extends DefaultK8sObject>
         super(result, listener);
     }
 
-    @JsonProperty("maxSurge")
-    private Integer maxSurge;
+    @JsonProperty("partition")
+    private Integer partition;
 
-    public StatefulSetRollingUpdateStrategy<R> maxSurge(Integer maxSurge) {
-        this.maxSurge = maxSurge;
+    public StatefulSetRollingUpdateStrategy<R> partition(Integer partition) {
+        this.partition = partition;
         return this;
     }
 

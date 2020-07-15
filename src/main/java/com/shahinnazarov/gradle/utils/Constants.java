@@ -26,6 +26,7 @@ public final class Constants {
     public static final String TARGET_PORT = "targetPort";
     public static final String NODE_PORT = "nodePort";
     public static final String PORT = "port";
+    public static final String CLUSTER_IP = "clusterIP";
 
     public static final String CONTAINERS = "containers";
     public static final String IMAGE = "image";
@@ -51,6 +52,7 @@ public final class Constants {
     public static final String ROLLING_UPDATE = "rollingUpdate";
     public static final String RECREATE = "recreate";
     public static final String MAX_SURGE = "maxSurge";
+    public static final String PARTITION = "partition";
     public static final String MAX_UNAVAILABLE = "maxUnavailable";
 
     public static final String RESOURCES = "resources";
