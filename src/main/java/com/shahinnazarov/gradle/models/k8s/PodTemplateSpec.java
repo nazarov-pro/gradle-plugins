@@ -235,6 +235,11 @@ public final class PodTemplateSpec<R extends DefaultK8sObject>
         return this;
     }
 
+    public PodTemplateSpec<R> nodeSelector(Map<String, String> nodeSelector) {
+        this.nodeSelector = nodeSelector;
+        return this;
+    }
+
     public PodTemplateSpec<R> priority(Integer priority) {
         this.priority = priority;
         return this;

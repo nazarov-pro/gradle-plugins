@@ -7,7 +7,9 @@ import com.shahinnazarov.gradle.utils.generate.ResourceGenerationHelper;
 import com.shahinnazarov.gradle.utils.helpers.ContainerGenerationHelper;
 import com.shahinnazarov.gradle.utils.helpers.PodVolumeGenerationHelper;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.shahinnazarov.gradle.utils.Constants.*;
@@ -41,10 +43,17 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment>,
                 .buildSpecification()
                 .buildDeployment();
 
-        String nodeSelector = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));
-        if (nodeSelector != null) {
+        Map<String, String> nodeSelector = getAsMap(getFullKey(groupId, NODE_SELECTOR), properties);
+        String selectedNode = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));
+        if (nodeSelector == null && selectedNode != null) {
+            nodeSelector = new HashMap<>(1);
+            nodeSelector.put(KUBERNETES_HOSTNAME, selectedNode);
+        }
+
+        if(nodeSelector != null) {
             deployment.spec().podTemplate()
-                    .spec().addNodeSelector(KUBERNETES_HOSTNAME, nodeSelector)
+                    .spec()
+                    .nodeSelector(nodeSelector)
                     .buildPodTemplateSpec()
                     .buildPodTemplate()
                     .buildSpecification()

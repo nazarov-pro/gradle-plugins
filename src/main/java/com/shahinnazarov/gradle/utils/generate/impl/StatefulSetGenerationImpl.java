@@ -8,6 +8,7 @@ import com.shahinnazarov.gradle.utils.generate.ResourceGenerationHelper;
 import com.shahinnazarov.gradle.utils.helpers.ContainerGenerationHelper;
 import com.shahinnazarov.gradle.utils.helpers.PodVolumeGenerationHelper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,15 +45,23 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                 .buildSpec()
                 .build();
 
-        String nodeSelector = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));
-        if (nodeSelector != null) {
+        Map<String, String> nodeSelector = getAsMap(getFullKey(groupId, NODE_SELECTOR), properties);
+        String selectedNode = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));
+        if (nodeSelector == null && selectedNode != null) {
+            nodeSelector = new HashMap<>(1);
+            nodeSelector.put(KUBERNETES_HOSTNAME, selectedNode);
+        }
+
+        if(nodeSelector != null) {
             statefulSet.spec().podTemplate()
-                    .spec().addNodeSelector(KUBERNETES_HOSTNAME, nodeSelector)
+                    .spec()
+                    .nodeSelector(nodeSelector)
                     .buildPodTemplateSpec()
                     .buildPodTemplate()
                     .buildSpec()
                     .build();
         }
+
 
         configureStrategy(groupId, properties, statefulSet);
         configureSelectors(groupId, properties, statefulSet);

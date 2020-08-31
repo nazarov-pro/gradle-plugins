@@ -35,6 +35,7 @@ public final class Constants {
     public static final String REPLICAS = "replicas";
     public static final String RESTART = "restart";
     public static final String SELECTED_NODE = "selectedNode";
+    public static final String NODE_SELECTOR = "nodeSelector";
     public static final String IMAGE_PULL_SECRET = "imagePullSecret";
     public static final String VOLUMES = "volumes";
     public static final String CONTAINER_PORT = "containerPort";

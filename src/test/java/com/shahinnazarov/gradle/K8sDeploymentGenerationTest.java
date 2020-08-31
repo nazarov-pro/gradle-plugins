@@ -28,6 +28,8 @@ public class K8sDeploymentGenerationTest {
         properties.put("k8s.deploy.ns01/deploy01.selector.labels.applicationName", "application11");
         properties.put("k8s.deploy.ns01/deploy01.replicas", "1");
         properties.put("k8s.deploy.ns01/deploy01.selectedNode", "appsVm");
+        properties.put("k8s.deploy.ns01/deploy01.nodeSelector.type", "live");
+        properties.put("k8s.deploy.ns01/deploy01.nodeSelector.env", "dev");
         properties.put("k8s.deploy.ns01/deploy01.restart", "always");
         properties.put("k8s.deploy.ns01/deploy01.imagePullSecret", "deployment");
         properties.put("k8s.deploy.ns01/deploy01.volumes.logs.type", "pvc");
