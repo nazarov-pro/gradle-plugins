@@ -34,6 +34,8 @@ public final class Constants {
     public static final String MOUNTS = "mounts";
     public static final String REPLICAS = "replicas";
     public static final String RESTART = "restart";
+    public static final String DNS_POLICY = "dnsPolicy";
+    public static final String HOST_NETWORK = "hostNetwork";
     public static final String SELECTED_NODE = "selectedNode";
     public static final String NODE_SELECTOR = "nodeSelector";
     public static final String IMAGE_PULL_SECRET = "imagePullSecret";

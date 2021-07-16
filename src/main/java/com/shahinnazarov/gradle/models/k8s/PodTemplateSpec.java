@@ -3,6 +3,7 @@ package com.shahinnazarov.gradle.models.k8s;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import com.shahinnazarov.gradle.models.enums.K8sPodTemplateSpecDnsPolicies;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,6 +156,11 @@ public final class PodTemplateSpec<R extends DefaultK8sObject>
 
     public PodTemplateSpec<R> dnsPolicy(String dnsPolicy) {
         this.dnsPolicy = dnsPolicy;
+        return this;
+    }
+
+    public PodTemplateSpec<R> dnsPolicy(K8sPodTemplateSpecDnsPolicies dnsPolicy) {
+        this.dnsPolicy = dnsPolicy.getType();
         return this;
     }
 

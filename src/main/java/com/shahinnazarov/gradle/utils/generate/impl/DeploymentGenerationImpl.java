@@ -38,6 +38,8 @@ public class DeploymentGenerationImpl implements ResourceGeneration<Deployment>,
                 .name(getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET)))
                 .buildImagePullSecret()
                 .restartPolicy(getFromProperties(properties, getFullKey(groupId, RESTART)))
+                .dnsPolicy(getFromProperties(properties, getFullKey(groupId, DNS_POLICY)))
+                .hostNetwork(getFromPropertiesAsBoolean(properties, getFullKey(groupId, HOST_NETWORK)))
                 .buildPodTemplateSpec()
                 .buildPodTemplate()
                 .buildSpecification()

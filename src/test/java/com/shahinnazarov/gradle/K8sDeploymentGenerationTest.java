@@ -31,6 +31,8 @@ public class K8sDeploymentGenerationTest {
         properties.put("k8s.deploy.ns01/deploy01.nodeSelector.type", "live");
         properties.put("k8s.deploy.ns01/deploy01.nodeSelector.env", "dev");
         properties.put("k8s.deploy.ns01/deploy01.restart", "always");
+        properties.put("k8s.deploy.ns01/deploy01.hostNetwork", "true");
+        properties.put("k8s.deploy.ns01/deploy01.dnsPolicy", "ClusterFirst");
         properties.put("k8s.deploy.ns01/deploy01.imagePullSecret", "deployment");
         properties.put("k8s.deploy.ns01/deploy01.volumes.logs.type", "pvc");
         properties.put("k8s.deploy.ns01/deploy01.volumes.logs.pvc.name", "mynm-logs");

@@ -36,14 +36,23 @@ public class StatefulSetGenerationImpl implements ResourceGeneration<StatefulSet
                 .replicas(getFromPropertiesAsInteger(properties, getFullKey(groupId, REPLICAS)))
                 .podTemplate()
                 .spec()
-                .addImagePullSecret()
-                .name(getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET)))
-                .buildImagePullSecret()
                 .restartPolicy(getFromProperties(properties, getFullKey(groupId, RESTART)))
+                .dnsPolicy(getFromProperties(properties, getFullKey(groupId, DNS_POLICY)))
+                .hostNetwork(getFromPropertiesAsBoolean(properties, getFullKey(groupId, HOST_NETWORK)))
                 .buildPodTemplateSpec()
                 .buildPodTemplate()
                 .buildSpec()
                 .build();
+        String pullSecret = getFromProperties(properties, getFullKey(groupId, IMAGE_PULL_SECRET));
+        if (pullSecret != null && !pullSecret.isEmpty()) {
+            statefulSet.spec().podTemplate().spec().addImagePullSecret()
+                    .name(pullSecret)
+                    .buildImagePullSecret()
+                    .buildPodTemplateSpec()
+                    .buildPodTemplate()
+                    .buildSpec()
+                    .build();
+        }
 
         Map<String, String> nodeSelector = getAsMap(getFullKey(groupId, NODE_SELECTOR), properties);
         String selectedNode = getFromProperties(properties, getFullKey(groupId, SELECTED_NODE));

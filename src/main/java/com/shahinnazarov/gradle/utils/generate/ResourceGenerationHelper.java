@@ -115,6 +115,14 @@ public interface ResourceGenerationHelper {
         return null;
     }
 
+    default Boolean getFromPropertiesAsBoolean(Properties properties, String id) {
+        String value = getFromProperties(properties, id);
+        if(value != null) {
+            return Boolean.parseBoolean(value);
+        }
+        return null;
+    }
+
     default Object getFromPropertiesAsIntegerOrString(Properties properties, String id) {
         String value = getFromProperties(properties, id);
         if(value != null) {
